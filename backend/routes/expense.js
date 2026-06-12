@@ -44,4 +44,18 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// Delete all expenses for a username
+router.delete("/user/:username", async (req, res) => {
+  try {
+    const result = await Expense.deleteMany({ username: req.params.username });
+    res.json({
+      message: "Expenses deleted",
+      count: result.deletedCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to delete expenses" });
+  }
+});
+
 module.exports = router;
