@@ -1,16 +1,20 @@
 # Expense Tracker
 
-A full-stack expense tracking app with a Node.js/Express API, MongoDB persistence, and an Expo React Native mobile client.
+A full-stack expense tracking app with a Node.js/Express API, MongoDB persistence, and an Expo React Native mobile client. Includes an admin dashboard for user and expense management, plus deployment-ready configuration for both backend (Render) and mobile (EAS Build).
 
 ## Features
 
 - User signup and login
 - Add income and expense transactions
-- Categorize transactions by type such as food, transport, bills, shopping, salary, and more
+- Categorize transactions by type such as food, transport, bills, shopping, salary, entertainment, health, education, and more
 - Pick a transaction date with a native date picker
 - View total balance, total income, and total expenses
 - View transaction history
 - Delete transactions
+- Admin authentication and dashboard with stats overview
+- View admin stats: total users, total expenses, and total amount spent
+- Search, edit, and delete users from the admin dashboard
+- View and delete user-specific transactions from the admin panel
 
 ## Tech Stack
 
@@ -31,6 +35,10 @@ A full-stack expense tracking app with a Node.js/Express API, MongoDB persistenc
 - Axios
 - React Native DateTimePicker
 - React Native Element Dropdown
+- Expo Google Fonts (Great Vibes)
+- Expo Vector Icons
+- React Native Reanimated
+- React Navigation
 
 ## Project Structure
 
@@ -40,22 +48,37 @@ expense-tracker/
 │   ├── config/
 │   │   └── db.js
 │   ├── models/
+│   │   ├── Admin.js
 │   │   ├── Expense.js
 │   │   └── User.js
 │   ├── routes/
+│   │   ├── admin.js
 │   │   ├── auth.js
-│   │   └── expense.js
+│   │   ├── expense.js
+│   │   ├── stats.js
+│   │   └── usersRoutes.js
+│   ├── .env.example
 │   ├── server.js
 │   └── package.json
 └── mobile/
     ├── app/
     │   ├── addExpense.jsx
+    │   ├── admin.jsx
+    │   ├── adminDash.jsx
+    │   ├── adminEdit.jsx
     │   ├── api.js
     │   ├── expense.jsx
+    │   ├── globalStyle.js
     │   ├── index.jsx
     │   └── signup.jsx
+    ├── assets/
+    │   └── images/
+    │       └── icon.png
+    ├── .env
     ├── app.json
-    └── package.json
+    ├── eas.json
+    ├── package.json
+    └── tsconfig.json
 ```
 
 ## Prerequisites
@@ -79,7 +102,7 @@ npm install
 
 ## Backend Setup
 
-Create a `.env` file in the `backend` directory:
+Create a `.env` file in the `backend` directory (use the provided `.env.example` as a template):
 
 ```env
 MONGO_URI=your_mongodb_connection_string
@@ -130,6 +153,12 @@ Examples:
 ```bash
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 EXPO_PUBLIC_API_URL=http://192.168.1.10:5000 npm start
+```
+
+For production, you can set the API URL in `mobile/.env`:
+
+```env
+EXPO_PUBLIC_API_URL=https://your-production-api.com
 ```
 
 
