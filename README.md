@@ -1,6 +1,6 @@
 # Expense Tracker
 
-A full-stack expense tracking app with a Node.js/Express API, MongoDB persistence, and an Expo React Native mobile client. Includes an admin dashboard for user and expense management, plus deployment-ready configuration for both backend (Render) and mobile (EAS Build).
+A full-stack expense tracking app with a Node.js/Express API (deployed on Render.com), MongoDB persistence, and an Expo React Native mobile client. Includes an admin dashboard for user and expense management, plus deployment-ready configuration for both backend (Render) and mobile (EAS Build).
 
 ## Features
 
@@ -85,22 +85,20 @@ expense-tracker/
 
 - Node.js
 - npm
-- MongoDB database connection string
 - Expo Go app, Android emulator, iOS simulator, or a development build
 
 ## Getting Started
 
-Clone the repository and install dependencies for both the backend and mobile app.
+Clone the repository and install dependencies for the mobile app. Backend setup is optional since the API is already deployed on Render.com — you only need to run it locally if you want to make backend changes.
 
 ```bash
-cd backend
-npm install
-
-cd ../mobile
+cd mobile
 npm install
 ```
 
-## Backend Setup
+## Backend Setup (Optional)
+
+> The backend API is already deployed on Render.com, so you don't need to run it locally to use the app. Follow these steps only if you want to make backend changes or run the API locally.
 
 Create a `.env` file in the `backend` directory (use the provided `.env.example` as a template):
 
@@ -140,7 +138,7 @@ npx expo start
 
 Then open the app using Expo Go, an Android emulator, an iOS simulator, or the web option from the Expo CLI.
 
-The mobile client automatically tries to detect the local development host and connect to the backend on port `5000`.
+The mobile client automatically tries to detect the local development host and connect to the backend on port `5000`. If you're using the deployed backend on Render, the app will connect to it directly (configured in `mobile/.env`).
 
 You can override the API URL with:
 
@@ -155,10 +153,10 @@ EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 EXPO_PUBLIC_API_URL=http://192.168.1.10:5000 npm start
 ```
 
-For production, you can set the API URL in `mobile/.env`:
+For production, you can set the API URL in `mobile/.env` (the app is pre-configured to use the Render-deployed API by default):
 
 ```env
-EXPO_PUBLIC_API_URL=https://your-production-api.com
+EXPO_PUBLIC_API_URL=https://expense-tracker-api-8j4z.onrender.com
 ```
 
 
