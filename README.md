@@ -11,6 +11,7 @@ A full-stack expense tracking app with a Node.js/Express API (deployed on Render
 - View total balance, total income, and total expenses
 - View transaction history
 - Delete transactions
+- **Scan receipts with AI** — upload a receipt image and automatically extract amount, description, category, and date using Google Gemini AI
 - Admin authentication and dashboard with stats overview
 - View admin stats: total users, total expenses, and total amount spent
 - Search, edit, and delete users from the admin dashboard
@@ -26,6 +27,8 @@ A full-stack expense tracking app with a Node.js/Express API (deployed on Render
 - Mongoose
 - CORS
 - dotenv
+- Multer (file uploads)
+- Google Gemini AI (receipt scanning)
 
 ### Mobile
 
@@ -33,6 +36,7 @@ A full-stack expense tracking app with a Node.js/Express API (deployed on Render
 - React Native
 - Expo Router
 - Axios
+- Expo Image Picker (receipt image uploads)
 - React Native DateTimePicker
 - React Native Element Dropdown
 - Expo Google Fonts (Great Vibes)
@@ -55,6 +59,7 @@ expense-tracker/
 │   │   ├── admin.js
 │   │   ├── auth.js
 │   │   ├── expense.js
+│   │   ├── receipt.js
 │   │   ├── stats.js
 │   │   └── usersRoutes.js
 │   ├── .env.example
@@ -105,6 +110,7 @@ Create a `.env` file in the `backend` directory (use the provided `.env.example`
 ```env
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
+GEMINI_API_KEY=your_gemini_api_key
 PORT=5000
 ```
 
