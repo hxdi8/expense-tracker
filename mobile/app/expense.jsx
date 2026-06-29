@@ -1,9 +1,10 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { Alert, Button, View, Text, FlatList, TouchableOpacity, } from "react-native";
 import { useState, useCallback } from "react";
-import api from "./api.js";
+import api, { getScanApi } from "./api.js";
 import styles from "./globalStyle.js";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router/react-navigation";
 import { Link, useLocalSearchParams } from "expo-router";
+import * as ImagePicker from 'expo-image-picker';
 // import { useFonts, Oi_400Regular } from '@expo-google-fonts/oi';
 
 export default function Expense() {
@@ -12,6 +13,7 @@ export default function Expense() {
   // let [fontsLoaded] = useFonts({ Oi_400Regular });
   // if (!fontsLoaded) return null;
   const [expenses, setExpenses] = useState([]);
+  const [image, setImage] = useState(null);
 
   const fetchExpenses = useCallback(async () => {
     try {
@@ -66,6 +68,65 @@ export default function Expense() {
 
   const totalBalance = totals.income - totals.expense;
   const formatCurrency = (amount) => `₹${amount.toLocaleString("en-US")}`;
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert('Permission required', 'Permission to access the media library is required to upload the receipt.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+      await scanReceipt(result.assets[0]);
+    }
+  };
+
+  const scanReceipt = async (selectedImage) => {
+    const img = selectedImage || image;
+    if (!img) {
+      Alert.alert("No image", "Please select a receipt image first.");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("receipt", {
+        uri: img.uri,
+        type: img.mimeType || "image/jpeg",
+        name: img.fileName || "receipt.jpg",
+      });
+      const response = await getScanApi().post("/api/scan-receipt", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const receiptData = response.data;
+      console.log("Receipt scanned:", receiptData);
+      // Use the scanned data, e.g.:
+      Alert.alert("Receipt scanned!", JSON.stringify(receiptData));
+
+      await api.post("/api/expenses", {
+        username,
+        type: receiptData.type,
+        amount: receiptData.amount,
+        description: receiptData.description,
+        category: receiptData.category,
+        date: receiptData.date || new Date().toISOString(),
+      });
+      fetchExpenses();
+      Alert.alert("Success", "Receipt scanned & expense saved!");
+
+    } catch (error) {
+      console.error("Scan receipt error:", error);
+      Alert.alert("Error", "Failed to scan receipt.");
+    }
+  };
+
 
   return (
     <View style={styles.keyboardWrapper}>
@@ -134,17 +195,25 @@ export default function Expense() {
         />
       </View>
 
-      <TouchableOpacity style={styles.expenseButton} activeOpacity={0.85}>
-        <Link
-          href={{
-            pathname: "/addExpense",
-            params: { loggedInUser: username },
-          }}
-          asChild
-        >
-          <Text style={styles.buttonText}>+ Add expense</Text>
-        </Link>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity style={[styles.expenseButton, { marginLeft: '45%' }]} activeOpacity={0.85}>
+          <Link
+            href={{
+              pathname: "/addExpense",
+              params: { loggedInUser: username },
+            }}
+            asChild
+          >
+            <Text style={styles.buttonText}>+ Add expense</Text>
+          </Link>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.expenseButton, { marginRight: '45%' }]} activeOpacity={0.85}
+          onPress={pickImage}>
+          <Text style={styles.buttonText}>+ Receipt image</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 }

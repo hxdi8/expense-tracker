@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   form: {
     backgroundColor: "#FFFFFF",
+    marginTop: '5%',
     padding: 24,
     borderRadius: 24, // Softer curves matching GPay style
     shadowColor: "#1A1A1A",
@@ -375,6 +376,11 @@ const styles = StyleSheet.create({
   },
 
   icon: { marginRight: 5 },
+
+  imageUpload: {
+    position: 'absolute',
+    bottom: 10,
+  }
 });
 
 export default styles;
